@@ -2,6 +2,18 @@
 
 A simple Model Context Protocol (MCP) server with HTTP serving capabilities and a `get_tasklist` tool for task management.
 
+## Background
+This is a sample mcp sse server for nextchat. For nextchat integration, you need to set the following environment variables in .env file:
+
+```config
+# Set your OpenAI API key or other LLM provider API key
+OPENAI_API_KEY=your-openai-api-key
+ENABLE_MCP=true
+```
+
+## local-proxy.js
+refer to local-proxy.js, because nextchat can't connect to remote sse server, it has to use a local node server as a proxy to connect to the remote sse server.
+
 ## Features
 
 - **MCP Server**: Implements the Model Context Protocol with a `get_tasklist` tool
