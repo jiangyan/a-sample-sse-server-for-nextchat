@@ -5,10 +5,23 @@ A simple Model Context Protocol (MCP) server with HTTP serving capabilities and 
 ## Background
 This is a sample mcp sse server for nextchat. For nextchat integration, you need to set the following environment variables in .env file:
 
+### envrionment variables
 ```config
 # Set your OpenAI API key or other LLM provider API key
 OPENAI_API_KEY=your-openai-api-key
 ENABLE_MCP=true
+```
+
+### mcp_config.json, under /app/mcp folder
+```
+{
+  "mcpServers": {
+    "my-mcp-server": {
+      "command": "node",
+      "args": ["local-proxy.js", "--url=https://localsseserver.letsbuild.fun/mcp/sse"]
+    }
+  }
+}
 ```
 
 ## local-proxy.js
