@@ -80,59 +80,77 @@ async def handle_list_tools() -> List[Tool]:
                 },
                 "required": ["category"]
             }
+        ),
+        Tool(
+            name="test_slack",
+            description="Test Slack integration",
+            inputSchema={
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
         )
     ]
 
 @server.call_tool()
 async def handle_call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
     """Handle tool calls"""
-    if name != "get_tasklist":
-        raise ValueError(f"Unknown tool: {name}")
-    
-    if "category" not in arguments:
-        raise ValueError("Missing required argument: category")
-    
-    category = arguments["category"].lower()
-    
-    try:
-        if category == "all":
-            # Return all tasks from all categories
-            all_tasks = []
-            for cat, tasks in SAMPLE_TASKS.items():
-                for task in tasks:
-                    task_with_category = task.copy()
-                    task_with_category["category"] = cat
-                    all_tasks.append(task_with_category)
-            result_tasks = all_tasks
-        elif category in SAMPLE_TASKS:
-            # Return tasks for specific category
-            result_tasks = [
-                {**task, "category": category} 
-                for task in SAMPLE_TASKS[category]
-            ]
-        else:
-            # Invalid category
-            available_categories = list(SAMPLE_TASKS.keys()) + ["all"]
-            raise ValueError(f"Invalid category '{category}'. Available categories: {', '.join(available_categories)}")
-        
-        # Format the response
-        response_data = {
-            "category": category,
-            "total_tasks": len(result_tasks),
-            "tasks": result_tasks,
-            "timestamp": datetime.now().isoformat()
-        }
-        
+    if name == "test_slack":
+        # Handle test_slack tool
         return [
             TextContent(
                 type="text",
-                text=json.dumps(response_data, indent=2)
+                text="bingo!"
             )
         ]
+    elif name == "get_tasklist":
+        # Handle get_tasklist tool
+        if "category" not in arguments:
+            raise ValueError("Missing required argument: category")
         
-    except Exception as e:
-        logger.error(f"Error in get_tasklist: {str(e)}")
-        raise ValueError(f"Error retrieving tasks: {str(e)}")
+        category = arguments["category"].lower()
+        
+        try:
+            if category == "all":
+                # Return all tasks from all categories
+                all_tasks = []
+                for cat, tasks in SAMPLE_TASKS.items():
+                    for task in tasks:
+                        task_with_category = task.copy()
+                        task_with_category["category"] = cat
+                        all_tasks.append(task_with_category)
+                result_tasks = all_tasks
+            elif category in SAMPLE_TASKS:
+                # Return tasks for specific category
+                result_tasks = [
+                    {**task, "category": category} 
+                    for task in SAMPLE_TASKS[category]
+                ]
+            else:
+                # Invalid category
+                available_categories = list(SAMPLE_TASKS.keys()) + ["all"]
+                raise ValueError(f"Invalid category '{category}'. Available categories: {', '.join(available_categories)}")
+            
+            # Format the response
+            response_data = {
+                "category": category,
+                "total_tasks": len(result_tasks),
+                "tasks": result_tasks,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            return [
+                TextContent(
+                    type="text",
+                    text=json.dumps(response_data, indent=2)
+                )
+            ]
+            
+        except Exception as e:
+            logger.error(f"Error in get_tasklist: {str(e)}")
+            raise ValueError(f"Error retrieving tasks: {str(e)}")
+    else:
+        raise ValueError(f"Unknown tool: {name}")
 
 # FastAPI app for HTTP serving
 app = FastAPI(
@@ -170,6 +188,10 @@ async def root():
                 "name": "get_tasklist",
                 "description": "Get a list of tasks filtered by category",
                 "categories": ["work", "personal", "learning", "home", "all"]
+            },
+            {
+                "name": "test_slack",
+                "description": "Test Slack integration"
             }
         ]
     }
@@ -249,6 +271,15 @@ async def mcp_sse_endpoint(request: Request):
                                 }
                             },
                             "required": ["category"]
+                        }
+                    },
+                    {
+                        "name": "test_slack",
+                        "description": "Test Slack integration",
+                        "inputSchema": {
+                            "type": "object",
+                            "properties": {},
+                            "required": []
                         }
                     }
                 ]
@@ -443,6 +474,15 @@ async def mcp_endpoint(request: Request):
                             }
                         },
                         "required": ["category"]
+                    }
+                },
+                {
+                    "name": "test_slack",
+                    "description": "Test Slack integration",
+                    "inputSchema": {
+                        "type": "object",
+                        "properties": {},
+                        "required": []
                     }
                 }
             ]
