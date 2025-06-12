@@ -70,6 +70,21 @@ async def test_mcp_server():
                 print(f"  ✅ Correctly failed with error: {e}")
             
             print()
+            
+            # Test the test_slack tool
+            print("🔍 Testing test_slack tool")
+            try:
+                result = await session.call_tool("test_slack", {})
+                
+                if result.content:
+                    print(f"  ✅ Success! Response: {result.content[0].text}")
+                else:
+                    print("  ❌ No content returned")
+                    
+            except Exception as e:
+                print(f"  ❌ Error: {e}")
+            
+            print()
             print("🎉 All tests completed!")
 
 if __name__ == "__main__":
