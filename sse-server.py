@@ -137,7 +137,7 @@ async def handle_call_tool(name: str, arguments: Dict[str, Any]) -> List[TextCon
 # FastAPI app for HTTP serving
 app = FastAPI(
     title="MCP SSE Server",
-    description="A simple MCP server with HTTP serving and task management",
+    description="A simple MCP server with HTTP serving and task list",
     version="0.1.0"
 )
 
@@ -150,7 +150,7 @@ async def root():
     return {
         "name": "MCP SSE Server",
         "version": "0.1.0",
-        "description": "A simple MCP server with HTTP serving and task management",
+        "description": "A simple MCP server with HTTP serving and task list",
         "available_endpoints": [
             "/",
             "/health",

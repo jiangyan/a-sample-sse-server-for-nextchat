@@ -5,11 +5,11 @@ description = "A simple MCP server with HTTP serving and get_tasklist tool"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "mcp>=1.0.0",
+    "mcp[cli]>=1.0.0",
     "fastapi>=0.104.0",
     "uvicorn>=0.24.0",
     "pydantic>=2.5.0",
-    "httpx>=0.25.0"
+    "httpx>=0.25.0",
 ]
 
 [build-system]
